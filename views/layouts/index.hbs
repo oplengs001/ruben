@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+var Mongoose = require('mongoose');
+Mongoose.connect('mongodb://localhost/nodeappdb'); 
+var db = Mongoose.connection;
+console.log('Connection with database succeeded');
+
+exports.db = db;
+
+  </script>
+
+<style>
+body {font-family: "Lato", sans-serif;}
+
+
+
+/* Style the tab */
+div.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+div.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+div.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+div.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.button {
+    position: relative;
+    background-color: #4CAF50;
+    border: none;
+    font-size: 28px;
+    color: #FFFFFF;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.button:after {
+    content: "";
+    background: #90EE90;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px!important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+
+.button:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+}
+
+div.relative{
+  position: relative;
+  left: 30px
+  border: 3px solid 73AD21; 
+}
+</style>
+</head>
+<body>
+
+<p>Click on the buttons inside the tabbed menu:</p>
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'CREATE')">CREATE</button>
+  <button class="tablinks" onclick="openCity(event, 'READ')">READ</button>
+  <button class="tablinks" onclick="openCity(event, 'UPDATE')">UPDATE</button>
+  <button class="tablinks" onclick="openCity(event, 'DELETE')">DELETE</button>
+</div>
+
+<div id="CREATE" class="tabcontent">
+  <h3>CREATE PROFILE</h3>
+
+  PROFILE ID:<br>
+  <input type="text" id="iD" value=""><br>
+  LASTNAME:<br>
+  <input type="text" id="lastName" value=""><br>
+  FIRSTNAME:<br>
+  <input type="text" id="firstName" value=""><br>
+  ADDRESS:<br>
+  <input type="text" id="address" value=""><br>
+  <br>
+  <button class="button" id ='saveData'>SUBMIT</button>
+
+  </div>
+ 
+ <div id="READ" class="tabcontent">
+  <h3>READ PROFILE</h3>
+  <h4>SEARCH FOR THE PROFILE</h4>
+  SEARCH:<br>
+  <input type="text" id="id" value=""><br>
+  LASTNAME:<br>
+  <input type="text" id="lastName" value=""><br>
+  FIRSTNAME:<br>
+  <input type="text" id="firstName" value=""><br>
+  ADDRESS:<br>
+  <input type="text" id="address" value=""><br>
+  <br>
+  <button class="button">FIND</button>
+</div>
+
+<div id="UPDATE" class="tabcontent">
+  <h3>UPDATE PROFILE</h3>
+
+    LASTNAME:<br>
+  <input type="text" id="lastName" ="lastname" value=""><br>
+  FIRSTNAME:<br>
+  <input type="text" id="firstName ="firstname" value=""><br>
+  ADDRESS:<br>
+  <input type="text" id="address" ="address" value=""><br>
+  <br>
+ <button class="button">UPDATE</button>
+</div>
+
+<div id="DELETE" class="tabcontent">
+  <h3>DELETE PROFILE</h3>
+
+    LASTNAME:<br>
+  <input type="text" name="lastName" value=""><br>
+  FIRSTNAME:<br>
+  <input type="text" name="firstName" value=""><br>
+  ADDRESS:<br>
+  <input type="text" name="address" value=""><br>
+  <br>
+<button class="button">DELETE</button>
+</div>
+
+ <script type="text/javascript">
+
+  $( '#saveData' ).click(function(){
+    var id = $('#iD').val();
+      var data = {};
+      data.profileID = id;
+      data.lastName = $('#lastName').val();
+      data.firstName = $('#firstName').val();
+      data.address = $('#address').val();
+      var MongoClient = require('mongodb').MongoClient;
+      var url = "mongodb://localhost:27017/mydb";
+       MongoClient.connect(url, function(err, db){
+  if (err) throw err;
+  db.collection("customers").insert(data, function(err, res) {
+    if (err) throw err;
+    db.close();
+  });
+});
+    console.log(data);
+  })
+
+</script>
+
+<script>
+
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+</script>
+     
+</body>
+</html>
